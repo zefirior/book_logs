@@ -1,0 +1,38 @@
+version: '2'
+services:
+
+  book_storage:
+    container_name: "book_storage"
+    build:
+      context: .
+      dockerfile: ./docker/book_storage/Dockerfile
+    ports:
+    - "8001:80"
+    labels:
+      filebeat: "enable"
+    depends_on:
+      - book_storage_db
+    environment:
+      ENTRYPOINT_TARGET: book_storage
+      DB_ADDR: "book_storage_db:5432"
+      DB_USER: "book_storage"
+      DB_NAME: "book_storage"
+
+  migrate_book_storage:
+    build:
+      context: .
+      dockerfile: ./docker/book_storage/Dockerfile
+    depends_on:
+      - book_storage_db
+    environment:
+      ENTRYPOINT_TARGET: migrate_book_storage
+      DB_ADDR: "book_storage_db:5432"
+      DB_USER: "book_storage"
+      DB_NAME: "book_storage"
+
+  book_storage_db:
+    image: postgres
+    environment:
+      POSTGRES_DB: book_storage
+      POSTGRES_USER: book_storage
+      POSTGRES_PASSWORD: password

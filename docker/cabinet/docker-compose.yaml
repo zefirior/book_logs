@@ -1,0 +1,17 @@
+version: '2'
+services:
+
+  cabinet:
+    container_name: "cabinet"
+    build:
+      context: .
+      dockerfile: ./docker/cabinet/Dockerfile
+    ports:
+    - "8003:80"
+    labels:
+      filebeat: "enable"
+    environment:
+      ENTRYPOINT_TARGET: cabinet
+      DB_ADDR: "cabinet_db:5432"
+      DB_USER: "cabinet"
+      DB_NAME: "cabinet"

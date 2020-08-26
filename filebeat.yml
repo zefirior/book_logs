@@ -1,0 +1,30 @@
+filebeat.autodiscover:
+  providers:
+    - type: docker
+      templates:
+        - condition:
+            contains:
+              docker.container.labels.filebeat: "enable"
+          config:
+            - type: docker
+              containers.ids:
+                - "${data.docker.container.id}"
+
+processors:
+- add_docker_metadata:
+    host: "unix:///var/run/docker.sock"
+
+- decode_json_fields:
+    fields: ["message", "request_id", "asctime", "levelname"]
+    target: "json"
+    overwrite_keys: true
+
+output.elasticsearch:
+  indices:
+    - index: "logs-%{[agent.version]}-%{+yyyy.MM.dd}"
+
+cloud.id: "<cloud_id>"
+cloud.auth: "<auth>"
+
+logging.json: true
+logging.metrics.enabled: false

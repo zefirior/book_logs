@@ -1,0 +1,37 @@
+version: '2'
+services:
+  delivery:
+    container_name: "delivery"
+    build:
+      context: .
+      dockerfile: ./docker/delivery/Dockerfile
+    ports:
+    - "8002:80"
+    depends_on:
+      - delivery_db
+    labels:
+      filebeat: "enable"
+    environment:
+      ENTRYPOINT_TARGET: delivery
+      DB_ADDR: "delivery_db:5432"
+      DB_USER: "delivery"
+      DB_NAME: "delivery"
+
+  migrate_delivery:
+    build:
+      context: .
+      dockerfile: ./docker/delivery/Dockerfile
+    depends_on:
+      - delivery_db
+    environment:
+      ENTRYPOINT_TARGET: migrate_delivery
+      DB_ADDR: "delivery_db:5432"
+      DB_USER: "delivery"
+      DB_NAME: "delivery"
+
+  delivery_db:
+    image: postgres
+    environment:
+      POSTGRES_DB: delivery
+      POSTGRES_USER: delivery
+      POSTGRES_PASSWORD: password

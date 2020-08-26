@@ -1,0 +1,14 @@
+flask==1.1.2
+flask-log-request-id==0.10.1
+flask_sqlalchemy==2.4.4
+psycopg2==2.8.5
+python-json-logger==0.1.11
+
+# Tracing
+Flask-Opentracing==1.1.0
+jaeger-client==4.3.0
+opentracing-instrumentation==3.3.1
+tornado<6
+
+# Sentry
+sentry-sdk[flask]==0.16.2

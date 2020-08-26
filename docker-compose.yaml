@@ -1,0 +1,24 @@
+version: '2'
+services:
+  jaeger:
+    image: jaegertracing/all-in-one:1.18
+    environment:
+      COLLECTOR_ZIPKIN_HTTP_PORT: 9411
+    ports:
+      - "5775:5775/udp"
+      - "6831:6831/udp"
+      - "6832:6832/udp"
+      - "5778:5778"
+      - "16686:16686"
+      - "14268:14268"
+      - "14250:14250"
+      - "9411:9411"
+
+  filebeat:
+      image: "docker.elastic.co/beats/filebeat:7.9.0"
+      command: "--strict.perms=false -v -e -d autodiscover,docker"
+      user: root
+      volumes:
+          - ./filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+          - /var/lib/docker:/var/lib/docker:ro
+          - /var/run/docker.sock:/var/run/docker.sock
